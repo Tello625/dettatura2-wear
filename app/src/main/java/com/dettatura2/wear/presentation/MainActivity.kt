@@ -683,8 +683,6 @@ fun PlayerScreen(
         }
     }
 }
-
-
 @Composable
 fun TranscriptionsListScreen(
     recordings: List<Recording>,
@@ -694,77 +692,76 @@ fun TranscriptionsListScreen(
     // Filtra solo le registrazioni con trascrizione
     val transcribedRecordings = recordings.filter { it.transcription.isNotEmpty() }
     
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+    if (transcribedRecordings.isEmpty()) {
+        // Schermata vuota
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+            contentAlignment = Alignment.Center
         ) {
-            // Header fisso
-            Text(
-                text = "Trascrizioni (${transcribedRecordings.size})",
-                color = Color(0xFF9C27B0),
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp, bottom = 8.dp),
-                textAlign = TextAlign.Center
-            )
-            
-            if (transcribedRecordings.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Nessuna trascrizione",
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                }
-            } else {
-                // Lista scrollabile
-                ScalingLazyColumn(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(transcribedRecordings.reversed().size) { index ->
-                        val recording = transcribedRecordings.reversed()[index]
-                        Text(
-                            text = recording.transcription,
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth(0.9f)
-                                .padding(vertical = 6.dp)
-                                .clickable { onTranscriptionClick(recording) }
-                        )
-                        // Separatore
-                        if (index < transcribedRecordings.size - 1) {
-                           Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .height(1.dp)
-                                .background(Color(0xFF333333))
-                        )
-                        }
-                    }
-                }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Nessuna trascrizione",
+                    color = Color.Gray,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "←",
+                    color = Color(0xFF9C27B0),
+                    fontSize = 20.sp,
+                    modifier = Modifier.clickable { onBack() }
+                )
+            }
+        }
+    } else {
+        // Lista compatta - tutto scorre insieme
+        ScalingLazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Titolo che scorre con la lista
+            item {
+                Text(
+                    text = "Trascrizioni (${transcribedRecordings.size})",
+                    color = Color(0xFF9C27B0),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 20.dp, bottom = 4.dp),
+                    textAlign = TextAlign.Center
+                )
             }
             
-            // Pulsante Indietro
-            CompactChip(
-                onClick = onBack,
-                label = { Text("Indietro") },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 8.dp)
-            )
+            // Trascrizioni compatte
+            items(transcribedRecordings.reversed().size) { index ->
+                val recording = transcribedRecordings.reversed()[index]
+                Text(
+                    text = recording.transcription,
+                    color = Color(0xFFFFB74D),
+                    fontSize = 18.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .padding(vertical = 2.dp)
+                        .clickable { onTranscriptionClick(recording) }
+                )
+            }
+            
+            // Pulsante indietro piccolo in fondo
+            item {
+                Text(
+                    text = "← indietro",
+                    color = Color.Gray,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(top = 8.dp, bottom = 16.dp)
+                        .clickable { onBack() }
+                )
+            }
         }
     }
 }
