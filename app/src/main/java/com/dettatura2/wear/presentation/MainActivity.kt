@@ -114,7 +114,7 @@ fun Dettatura2WearApp(
     
     val scope = rememberCoroutineScope()
     
-    // Funzione per trascrivere in background (non blocca)
+  // Funzione per trascrivere in background (non blocca)
     fun transcribeInBackground(recording: Recording) {
         scope.launch {
             isTranscribing = true
@@ -122,10 +122,16 @@ fun Dettatura2WearApp(
                 val result = cloudSync.transcribeAudio(recording)
                 if (result.success && result.transcription.isNotEmpty()) {
                     repository.updateTranscription(recording.id, result.transcription)
-                    recordings = repository.getRecordings()
+                } else {
+                    // Trascrizione fallita o vuota
+                    repository.updateTranscription(recording.id, "non ho capito")
                 }
+                recordings = repository.getRecordings()
             } catch (e: Exception) {
                 e.printStackTrace()
+                // Errore durante la trascrizione
+                repository.updateTranscription(recording.id, "non ho capito")
+                recordings = repository.getRecordings()
             }
             isTranscribing = false
         }
