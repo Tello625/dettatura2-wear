@@ -107,6 +107,7 @@ fun Dettatura2WearApp(
         if (cloudSync.savedPin == null) "setup" else "main"
     )}
     var selectedRecording by remember { mutableStateOf<Recording?>(null) }
+    var previousScreen by remember { mutableStateOf("list") }
     var isSyncing by remember { mutableStateOf(false) }
     var syncMessage by remember { mutableStateOf<String?>(null) }
     var isTranscribing by remember { mutableStateOf(false) }
@@ -219,8 +220,9 @@ fun Dettatura2WearApp(
             "list" -> RecordingsListScreen(
                 recordings = recordings,
                 onBack = { currentScreen = "main" },
-                onRecordingClick = { rec ->
+               onRecordingClick = { rec ->
                     selectedRecording = rec
+                    previousScreen = "list"
                     currentScreen = "player"
                 },
                 onDeleteAll = {
@@ -234,7 +236,7 @@ fun Dettatura2WearApp(
                 PlayerScreen(
                     recording = rec,
                     audioRecorder = audioRecorder,
-                    onBack = { currentScreen = "list" },
+                   onBack = { currentScreen = previousScreen },
                     onDelete = {
                         repository.deleteRecording(rec)
                         recordings = repository.getRecordings()
@@ -245,8 +247,9 @@ fun Dettatura2WearApp(
             
             "transcriptions" -> TranscriptionsListScreen(
                 recordings = recordings,
-                onTranscriptionClick = { rec ->
+               onTranscriptionClick = { rec ->
                     selectedRecording = rec
+                    previousScreen = "transcriptions"
                     currentScreen = "player"
                 },
                 onBack = { currentScreen = "main" }
@@ -732,7 +735,7 @@ fun TranscriptionsListScreen(
                         Text(
                             text = recording.transcription,
                             color = Color.White,
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
