@@ -45,6 +45,11 @@ android {
 
 dependencies {
     // Wear OS
+// Complications (per watch face)
+    implementation("androidx.wear.watchface:watchface-complications-data-source-ktx:1.2.1")
+
+    // Gson (per JSON)
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.wear:wear:1.3.0")
     implementation("androidx.wear.compose:compose-material:1.2.1")
     implementation("androidx.wear.compose:compose-foundation:1.2.1")
