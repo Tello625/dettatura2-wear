@@ -13,7 +13,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -744,11 +743,12 @@ fun TranscriptionsListScreen(
                         )
                         // Separatore
                         if (index < transcribedRecordings.size - 1) {
-                            Divider(
-                                color = Color(0xFF333333),
-                                thickness = 1.dp,
-                                modifier = Modifier.fillMaxWidth(0.7f)
-                            )
+                           Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(1.dp)
+                                .background(Color(0xFF333333))
+                        )
                         }
                     }
                 }
