@@ -107,14 +107,14 @@ fun Dettatura2WearApp(
         if (cloudSync.savedPin == null) "setup" else "main"
     )}
     var selectedRecording by remember { mutableStateOf<Recording?>(null) }
-    var previousScreen by remember { mutableStateOf("list") }
+    var previousScreen by remember { mutableStateOf("list") }  // Traccia da dove si arriva al player
     var isSyncing by remember { mutableStateOf(false) }
     var syncMessage by remember { mutableStateOf<String?>(null) }
     var isTranscribing by remember { mutableStateOf(false) }
     
     val scope = rememberCoroutineScope()
     
-  // Funzione per trascrivere in background (non blocca)
+    // Funzione per trascrivere in background (non blocca)
     fun transcribeInBackground(recording: Recording) {
         scope.launch {
             isTranscribing = true
@@ -226,9 +226,9 @@ fun Dettatura2WearApp(
             "list" -> RecordingsListScreen(
                 recordings = recordings,
                 onBack = { currentScreen = "main" },
-               onRecordingClick = { rec ->
+                onRecordingClick = { rec ->
                     selectedRecording = rec
-                    previousScreen = "list"
+                    previousScreen = "list"  // Traccia provenienza
                     currentScreen = "player"
                 },
                 onDeleteAll = {
@@ -242,7 +242,7 @@ fun Dettatura2WearApp(
                 PlayerScreen(
                     recording = rec,
                     audioRecorder = audioRecorder,
-                   onBack = { currentScreen = previousScreen },
+                    onBack = { currentScreen = previousScreen },  // Torna alla schermata precedente
                     onDelete = {
                         repository.deleteRecording(rec)
                         recordings = repository.getRecordings()
@@ -253,9 +253,9 @@ fun Dettatura2WearApp(
             
             "transcriptions" -> TranscriptionsListScreen(
                 recordings = recordings,
-               onTranscriptionClick = { rec ->
+                onTranscriptionClick = { rec ->
                     selectedRecording = rec
-                    previousScreen = "transcriptions"
+                    previousScreen = "transcriptions"  // Traccia provenienza
                     currentScreen = "player"
                 },
                 onBack = { currentScreen = "main" }
@@ -689,6 +689,8 @@ fun PlayerScreen(
         }
     }
 }
+
+
 @Composable
 fun TranscriptionsListScreen(
     recordings: List<Recording>,
@@ -771,4 +773,5 @@ fun TranscriptionsListScreen(
         }
     }
 }
+
 
